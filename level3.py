@@ -316,10 +316,21 @@ for course in ccd:
                         else:
                             break
                         choice_content = bool_img.next_sibling
-                        if choice_content.name == "p":
-                            choice["text"] = choice_content.string
-                        elif choice_content.name == "img":
-                            choice["image"] = choice_content["src"]
+                        while True:
+                            if choice_content.name == "p" and choice_content.string:
+                                choice["text"] = choice_content.string
+                                break
+                            elif choice_content.name == "img":
+                                choice["image"] = choice_content["src"]
+                                break
+                            else:
+                                choice_content = choice_content.next_sibling
+                        # if choice_content.name == "p":
+                        #     choice["text"] = choice_content.string
+                        # elif choice_content.name == "img":
+                        #     choice["image"] = choice_content["src"]
+                        # else:
+                        #     print(f"choice id = {choice['id']} and type is {choice_content.name}")
                         # print(choice)
                         start = choice_content.next_sibling
                     else:

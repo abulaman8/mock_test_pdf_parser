@@ -108,7 +108,9 @@ class ChoiceImage(Base):
 
     id = Column(Integer, primary_key=True)
     choice_id = Column(ForeignKey('qp_choice.id', deferrable=True, initially='DEFERRED'), nullable=False, index=True)
-    imagecontent_id = Column(ForeignKey('qp_imagecontent.id', deferrable=True, initially='DEFERRED'), nullable=False, index=True)
+    imagecontent_id = Column(
+            ForeignKey('qp_imagecontent.id', deferrable=True, initially='DEFERRED'), nullable=False, index=True
+            )
 
     # choice = relationship('QpChoice')
     # imagecontent = relationship('QpImagecontent')

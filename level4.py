@@ -331,10 +331,21 @@ for course in ccd:
                         else:
                             break
                         choice_content = bool_img.next_sibling
-                        if choice_content.name == "p":
-                            choice["text"] = choice_content.string
-                        elif choice_content.name == "img":
-                            choice["image"] = choice_content["src"]
+                        while True:
+                            if choice_content.name == "p" and choice_content.string:
+                                choice["text"] = choice_content.string
+                                break
+                            elif choice_content.name == "img":
+                                choice["image"] = choice_content["src"]
+                                choice["text"] = "image_only"
+                                break
+                            else:
+                                choice_content = choice_content.next_sibling
+                        # if choice_content.name == "p":
+                        #     choice["text"] = choice_content.string
+                        # elif choice_content.name == "img":
+                        #     choice["image"] = choice_content["src"]
+                        #     choice["text"] = "image_only"
                         # print(choice)
                         start = choice_content.next_sibling
                     else:
@@ -391,10 +402,21 @@ for course in ccd:
                         else:
                             break
                         choice_content = bool_img.next_sibling
-                        if choice_content.name == "p":
-                            choice["text"] = choice_content.string
-                        elif choice_content.name == "img":
-                            choice["image"] = choice_content["src"]
+                        while True:
+                            if choice_content.name == "p" and choice_content.string:
+                                choice["text"] = choice_content.string
+                                break
+                            elif choice_content.name == "img":
+                                choice["image"] = choice_content["src"]
+                                choice["text"] = "image_only"
+                                break
+                            else:
+                                choice_content = choice_content.next_sibling
+                        # if choice_content.name == "p":
+                        #     choice["text"] = choice_content.string
+                        # elif choice_content.name == "img":
+                        #     choice["image"] = choice_content["src"]
+                        #     choice["text"] = "image_only"
                         start = choice_content.next_sibling
                     else:
                         # print("multiple choice collected")
@@ -414,21 +436,27 @@ engine = create_engine(CONNSTR)
 
 Session = sessionmaker(bind=engine)
 session = Session()
+all_qps = []
+all_qns = []
+all_images = []
+all_choices = []
 for course in ccd:
+    print(f"starting{course}")
     c = session.query(Course).filter(Course.name == course).first()
     qp = Questionpaper(
         name=question_paper["name"],
         course=c,
         type='Quiz1'
         )
-    qns = []
     for qn in ccd[course]["questions"]:
         qn_images = []
         choice_images = []
+        qn_choices = []
         q = Question(
                 text=qn["text"],
                 question_paper=qp,
-                type=qn["type"]
+                type=qn["type"],
+                marks=qn["marks"],
                 )
         if len(qn["images"]):
             for img in qn["images"]:
@@ -440,13 +468,15 @@ for course in ccd:
                     f.write(imgdata)
                 blob = bucket.blob(f"images/{filename}")
                 blob.upload_from_filename(f"images/{filename}")
-                os.remove(f"images/{filename}")
+                blob.make_public()
+                # os.remove(f"images/{filename}")
 
                 new_img = Imagecontent(
                         img=f"images/{filename}",
                         )
                 qn_images.append(new_img)
         q.images = qn_images
+        all_images.extend(qn_images)
 
         if qn["type"] == "SA":
             if qn["response_type"] == "Numeric" and qn["answers_type"] == "Equal":
@@ -458,12 +488,12 @@ for course in ccd:
             elif qn["response_type"] == "Alphanumeric" and qn["answers_type"] == "Equal":
                 q.text_answer = qn["possible_answers"]
             else:
-                q.text_answer = qn["possible_answers"]
-        elif qn["type"] == "MCQ":
+                q.text_answer = qn.get("possible_answers", "")
+        elif qn["type"] == "MCQ" or qn["type"] == "SCQ":
             choices = qn["choices"]
             for choice in choices:
                 new_choice = Choice(
-                        choice=choice["text"],
+                        choice=choice.get("text", ""),
                         is_correct=choice["is_correct"],
                         related_question=q
                         )
@@ -478,13 +508,25 @@ for course in ccd:
                         f.write(imgdata)
                     blob = bucket.blob(f"images/{filename}")
                     blob.upload_from_filename(f"images/{filename}")
-                    os.remove(f"images/{filename}")
+                    blob.make_public()
+                    # os.remove(f"images/{filename}")
 
                     new_img = Imagecontent(
                             img=f"images/{filename}",
                             )
-                    
+                    choice_images.append(new_img)
+                    new_choice.images.append(new_img)
+                qn_choices.append(new_choice)
+            q.choices = qn_choices
+            all_choices.extend(qn_choices)
+            all_images.extend(choice_images)
+        all_qns.append(q)
+    qp.questions = all_qns
+    all_qps.append(qp)
+    print(f"done{course}")
 
-                
 
+session.add_all(all_qps + all_qns + all_choices + all_images)
+session.commit()
+session.close()
 
