@@ -469,7 +469,7 @@ for course in ccd:
                 blob = bucket.blob(f"images/{filename}")
                 blob.upload_from_filename(f"images/{filename}")
                 blob.make_public()
-                # os.remove(f"images/{filename}")
+                os.remove(f"images/{filename}")
 
                 new_img = Imagecontent(
                         img=f"images/{filename}",
@@ -509,7 +509,7 @@ for course in ccd:
                     blob = bucket.blob(f"images/{filename}")
                     blob.upload_from_filename(f"images/{filename}")
                     blob.make_public()
-                    # os.remove(f"images/{filename}")
+                    os.remove(f"images/{filename}")
 
                     new_img = Imagecontent(
                             img=f"images/{filename}",
