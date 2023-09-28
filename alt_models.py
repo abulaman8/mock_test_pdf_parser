@@ -44,6 +44,7 @@ class Questionpaper(Base):
 
     course = relationship('Course')
     questions = relationship('Question', secondary='qp_questionpaper_questions')
+    comprehensions = relationship('Comprehension', secondary='qp_questionpaper_comprehensions')
 
 
 class Question(Base):
@@ -51,6 +52,7 @@ class Question(Base):
 
     id = Column(Integer, primary_key=True)
     type = Column(String(10), nullable=False)
+    qn_no = Column(Integer)
     text = Column(Text, nullable=False)
     marks = Column(Integer, nullable=False)
     num_min = Column(DECIMAL)
@@ -62,6 +64,18 @@ class Question(Base):
     question_paper = relationship('Questionpaper')
     choices = relationship('Choice', secondary='qp_question_choices')
     images = relationship('Imagecontent', secondary='qp_question_images')
+
+
+class Comprehension(Base):
+    __tablename__ = 'qp_comprehension'
+
+    id = Column(Integer, primary_key=True)
+    text = Column(Text, nullable=False)
+    question_paper_id = Column(ForeignKey('qp_questionpaper.id'), nullable=False, index=True)
+
+    question_paper = relationship('Questionpaper')
+    questions = relationship('Question', secondary='qp_comprehension_questions')
+    images = relationship('Imagecontent', secondary='qp_comprehension_images')
 
 
 class Choice(Base):
@@ -147,15 +161,29 @@ class QuestionChoice(Base):
     # question = relationship('Question')
 
 
+class ComprehensionImage(Base):
+    __tablename__ = 'qp_comprehension_images'
+    __table_args__ = ()
+
+    id = Column(Integer, primary_key=True)
+    comprehension_id = Column(ForeignKey('qp_comprehension.id'), nullable=False, index=True)
+    imagecontent_id = Column(ForeignKey('qp_imagecontent.id'), nullable=False, index=True)
 
 
+class ComprehensionQuestion(Base):
+    __tablename__ = 'qp_comprehension_questions'
+    __table_args__ = ()
+
+    id = Column(Integer, primary_key=True)
+    comprehension_id = Column(ForeignKey('qp_comprehension.id'), nullable=False, index=True)
+    question_id = Column(ForeignKey('qp_question.id'), nullable=False, index=True)
 
 
+class QuestionpaperComprehension(Base):
+    __tablename__ = 'qp_questionpaper_comprehensions'
 
-
-
-
-
-
+    id = Column(Integer, primary_key=True)
+    questionpaper_id = Column(ForeignKey('qp_questionpaper.id'), nullable=False, index=True)
+    comprehension_id = Column(ForeignKey('qp_comprehension.id'), nullable=False, index=True)
 
 
