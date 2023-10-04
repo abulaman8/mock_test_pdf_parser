@@ -41,6 +41,13 @@ courses = [
         "Design Thinking",
 
         ]
+foundation_courses = [
+        "Maths2",
+        "Statistics2",
+        "CT",
+        "Intro to Python",
+
+        ]
 
 
 ccd = {}

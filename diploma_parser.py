@@ -2,7 +2,8 @@ from uuid import uuid4
 import fitz
 import re
 from bs4 import BeautifulSoup
-from alt_models import Question, Questionpaper, Choice, Course, Imagecontent,Comprehension
+
+from alt_models import Question, Questionpaper, Choice, Course, Imagecontent, Comprehension
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import base64
@@ -12,33 +13,8 @@ import os
 gcs_client = storage.Client.from_service_account_json('creds.json')
 bucket_name = "mock-test-iitmbs.appspot.com"
 bucket = gcs_client.get_bucket(bucket_name)
-months = [
-        "jan",
-        "feb",
-        "mar",
-        "apr",
-        "may",
-        "jun",
-        "jul",
-        "aug",
-        "sept",
-        "oct",
-        "nov",
-        "dec",
-        "january",
-        "february",
-        "march",
-        "april",
-        "june",
-        "july",
-        "august",
-        "september",
-        "october",
-        "november",
-        "december",
-        ]
 
-pdf_file = "test.pdf"
+pdf_file = "diploma.pdf"
 doc = fitz.open(pdf_file)
 template = """
 <!DOCTYPE html>
@@ -58,22 +34,21 @@ incorrect = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2A
 correct = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABWUlEQVR4nGP4TyJgoImG8EV+QXO9iNUQttA3d3Ny5vp4z4mOhDWELvDJ2ZTUf7Gp9URVwrJw+xYLfBpC5ntnbUjoPd/Yfb4+cXmEQ6ulVZ0JVEPW7vj07THIqoPneQOd0XWuvvNcHdBs2yZzy1pjqJOydsWnbYupPJAbvyYUohroxYx1cZ1na9vP1sQvDbNpNLOoMYJ6OnNnXNrW6LaTlb3nGqKWBQK9GDjHM31tTNuZmtbTlbFLQqwbTM2rDeE2M6RuiUreEFm2N3vCpZbWk1VZmxJytyQ3n6xoOl0RszjYqt7ErMoQ2akgJ8WsDAaanbs1Gejc9jPVjafKGk+WRS0KAnrRtNIALSQY4F4MnOWZsia66VR53YmSyAWBQC+aVuhjBh0iWD0nObn3OcQsDgmf7w/0okm5HtawRokHYEjbNpsDvWhchl01ugYgAHrRqFQXl2osGggCAP5JY86bQRXXAAAAAElFTkSuQmCC"
 
 courses = [
-        "SPG",
-        "Sw Testing",
-        "Industry 4.0",
-        "SW Engg",
-        "AI",
-        "Deep learning",
-        "PSM",
-        "Algo Thinking",
-        "BBN",
-        "Fin Forensics",
-        "Data Viz",
-        "Market Research",
-        "LSM",
-        "Intro to BigData",
-        "Design Thinking",
-
+        "Maths2",
+        "Statistics2",
+        "CT",
+        "Intro to Python",
+        "DBMS",
+        "PDSA",
+        "AppDev1",
+        "MLF",
+        "Java",
+        "AppDev2",
+        "MLT",
+        "MLP",
+        "BDM",
+        "Business Analytics",
+        "System Commands",
         ]
 
 ccd = {}
@@ -119,19 +94,8 @@ question_paper_name = ""
 while start != end:
     question_paper_name += start.string + " "
     start = start.next_sibling
-exam_date = ""
+
 print(question_paper_name)
-name = question_paper_name.split(" ")
-for i in range(len(name)):
-    if name[i].lower() in months:
-        date = name[i-1]
-        month = name[i]
-        year = name[i+1]
-        exam_date = date + " " + month + " " + year
-        break
-print(exam_date)
-
-
 sorted_courses = sorted(courses, key=lambda x: list(strings).index(x))
 sorted_courses.append("end_of_paper")
 # print(sorted_courses)
@@ -588,3 +552,4 @@ for course in ccd:
 session.add_all(all_qps + all_qns + all_choices + all_comprehensions + all_images)
 session.commit()
 session.close()
+
