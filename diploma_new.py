@@ -11,7 +11,7 @@ import os
 
 gcs_client = storage.Client.from_service_account_json('creds.json')
 bucket_name = "mock-test-iitmbs.appspot.com"
-bucket = gcs_client.get_bucket(bucket_name)
+bucket = gcs_client.get_bucket(bucket_name, timeout=300)
 months = [
         "jan",
         "feb",
@@ -38,7 +38,7 @@ months = [
         "december",
         ]
 
-pdf_file = "test.pdf"
+pdf_file = "diploma_paper.pdf"
 doc = fitz.open(pdf_file)
 template = """
 <!DOCTYPE html>
@@ -58,22 +58,21 @@ incorrect = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2A
 correct = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABWUlEQVR4nGP4TyJgoImG8EV+QXO9iNUQttA3d3Ny5vp4z4mOhDWELvDJ2ZTUf7Gp9URVwrJw+xYLfBpC5ntnbUjoPd/Yfb4+cXmEQ6ulVZ0JVEPW7vj07THIqoPneQOd0XWuvvNcHdBs2yZzy1pjqJOydsWnbYupPJAbvyYUohroxYx1cZ1na9vP1sQvDbNpNLOoMYJ6OnNnXNrW6LaTlb3nGqKWBQK9GDjHM31tTNuZmtbTlbFLQqwbTM2rDeE2M6RuiUreEFm2N3vCpZbWk1VZmxJytyQ3n6xoOl0RszjYqt7ErMoQ2akgJ8WsDAaanbs1Gejc9jPVjafKGk+WRS0KAnrRtNIALSQY4F4MnOWZsia66VR53YmSyAWBQC+aVuhjBh0iWD0nObn3OcQsDgmf7w/0okm5HtawRokHYEjbNpsDvWhchl01ugYgAHrRqFQXl2osGggCAP5JY86bQRXXAAAAAElFTkSuQmCC"
 
 courses = [
-        "SPG",
-        "Sw Testing",
-        "Industry 4.0",
-        "SW Engg",
-        "AI",
-        "Deep learning",
-        "PSM",
-        "Algo Thinking",
-        "BBN",
-        "Fin Forensics",
-        "Data Viz",
-        "Market Research",
-        "LSM",
-        "Intro to BigData",
-        "Design Thinking",
-
+        "Maths2",
+        "Statistics2",
+        "CT",
+        "Intro to Python",
+        "DBMS",
+        "PDSA",
+        "AppDev1",
+        "MLF",
+        "Java",
+        "AppDev2",
+        "MLT",
+        "MLP",
+        "BDM",
+        "Business Analytics",
+        "System Commands",
         ]
 
 ccd = {}
@@ -166,6 +165,7 @@ for course in ccd:
             "p",
             string="Section Marks :"
             ).next_sibling.string)
+
 
     no_of_qns = int(no_of_qns)
     ccd[course]["no_of_qns"] = no_of_qns

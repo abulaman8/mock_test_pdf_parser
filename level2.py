@@ -3,7 +3,7 @@ import re
 from bs4 import BeautifulSoup, NavigableString
 
 
-pdf_file = "test.pdf"
+pdf_file = "diploma_paper.pdf"
 doc = fitz.open(pdf_file)
 template = """
 <!DOCTYPE html>
@@ -18,27 +18,44 @@ template = """
 </html>
 """
 
-
 courses = [
-        "SPG",
-        "Sw Testing",
-        "Industry 4.0",
-        "SW Engg",
-        "AI",
-        "Deep learning",
-        "PSM",
-        "Algo Thinking",
-        "BBN",
-        "Fin Forensics",
-        "Data Viz",
-        "Market Research",
-        "LSM",
-        "Intro to BigData",
-        "Design Thinking",
-
-
-
+        "Maths2",
+        "Statistics2",
+        "CT",
+        "Intro to Python",
+        "DBMS",
+        "PDSA",
+        "AppDev1",
+        "MLF",
+        "Java",
+        "AppDev2",
+        "MLT",
+        "MLP",
+        "BDM",
+        "Business Analytics",
+        "System Commands",
         ]
+
+# courses = [
+#         "SPG",
+#         "Sw Testing",
+#         "Industry 4.0",
+#         "SW Engg",
+#         "AI",
+#         "Deep learning",
+#         "PSM",
+#         "Algo Thinking",
+#         "BBN",
+#         "Fin Forensics",
+#         "Data Viz",
+#         "Market Research",
+#         "LSM",
+#         "Intro to BigData",
+#         "Design Thinking",
+#
+#
+#
+#         ]
 
 html_content = ""
 for page in doc:
